@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { ethers } from "ethers";
 import ethereumIcon from "./assets/ethereum.png";
 import './App.css';
 
@@ -92,6 +91,7 @@ export default function App() {
             <img
               className="icon"
               src={ethereumIcon}
+              alt="eth"
             />
             <p>ETH</p>
           </div>
@@ -117,6 +117,7 @@ export default function App() {
               <img
                 className="icon"
                 src={ethereumIcon}
+                alt="eth"
               />
               <p>ETH</p>
               <button className="waveButton" onClick={addDonation}>
