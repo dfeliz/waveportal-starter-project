@@ -25,10 +25,48 @@
 }
 
 .waveButton {
-  cursor: pointer;
-  margin-top: 16px;
-  padding: 8px;
   border: 0;
+  padding: 8px;
+  flex-grow: 1;
+  cursor: pointer;
+  margin-left: 12px;
   border-radius: 5px;
-  
+  background-color: #efefef;
+  transition: 150ms all ease-in-out;
+}
+
+.waveButton:hover {
+  background-color: #ddd;
+}
+.waveButton:hover:focus:active {
+  background-color: #ccc;
+}
+
+.input {
+  border: 0;
+  height: 28px;
+  flex-grow: 2;
+  padding-left: 8px;
+  margin-right: 8px;
+  border-radius: 5px;
+  background-color: #efefef;
+  transition: 150ms all ease-in-out;
+}
+
+.input:hover {
+  background-color: #ddd;
+}
+.input:hover:focus, .input:focus {
+  background-color: #ccc;
+}
+
+.actionsContainer {
+  display: flex;
+  margin-top: 16px;
+}
+
+.icon {
+  height: 20px;
+  margin-right: 4px;
+  margin-top: 2px;
 }

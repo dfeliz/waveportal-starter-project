@@ -1,28 +1,77 @@
-import * as React from "react";
+import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
+import ethereumIcon from "./assets/ethereum.png";
 import './App.css';
 
 export default function App() {
+  const [donations, _setDonations] = useState("0");
+  const [quantity, _setQuantity] = useState("");
 
-  const wave = () => {
-    
+  const addDonation = () => {
+    const sum = Number(donations) + Number(quantity);
+    _setDonations(sum.toFixed(8).toString());
   }
-  
+
+  const checkIfWalletIsConnected = () => {
+    /*
+    * First make sure we have access to window.ethereum
+    */
+    const { ethereum } = window;
+
+    if (!ethereum) {
+      console.log("Make sure you have metamask!");
+      return;
+    } else {
+      console.log("We have the ethereum object", ethereum);
+    }
+  }
+
+  const setQuantity = (number) => {
+    const string = Number(number).toFixed(8).toString();
+    console.log(string);
+    _setQuantity(string);
+  }
+
+  useEffect(() => {
+    checkIfWalletIsConnected();
+  }, [])
+
   return (
     <div className="mainContainer">
 
       <div className="dataContainer">
         <div className="header">
-        👋 Hey there!
+          Donations app!
         </div>
 
         <div className="bio">
-        I am farza and I worked on self-driving cars so that's pretty cool right? Connect your Ethereum wallet and wave at me!
+          This is an example donations app, just to learn how does this work.
         </div>
 
-        <button className="waveButton" onClick={wave}>
-          Wave at Me
-        </button>
+        <div className="bio">
+          Total donations until now: {donations}
+        </div>
+
+        <div className="actionsContainer">
+          <input
+            type="number"
+            className="input"
+            value={quantity}
+            step="0.00000001"
+            placeholder="0.00000001"
+            onChange={(e) => setQuantity(e.target.value)}
+            onInput={(e) => setQuantity(e.target.value)}
+          >
+          </input>
+          <img
+            className="icon"
+            src={ethereumIcon}
+          />
+          <p>ETH</p>
+          <button className="waveButton" onClick={addDonation}>
+            Donate
+          </button>
+        </div>
       </div>
     </div>
   );
