@@ -1,75 +1,40 @@
 import React, { useState, useEffect } from "react";
 import ethereumIcon from "./assets/ethereum.png";
+import { useWeb3Integration } from "./useWeb3Integration";
 import './App.css';
 
 export default function App() {
-  const [donations, _setDonations] = useState("0");
-  const [quantity, _setQuantity] = useState("");
-  const [currentAccount, setCurrentAccount] = useState("");
+  const [donationsTotal, setDonationsTotal] = useState("0");
+  const [donationQuantity, setDonationQuantity] = useState("0");
+  const [inputValue, _setInputValue] = useState("");
+  const { connectWallet, currentAccount, donate, getTotal, getDonations } = useWeb3Integration();
 
-  const addDonation = () => {
-    const sum = Number(donations) + Number(quantity);
-    _setDonations(sum.toFixed(8).toString());
+  const refreshDonationsTotal = async () => {
+    const total = await getTotal();
+    setDonationsTotal(total.toString());
   }
 
-  const checkIfWalletIsConnected = async () => {
-    try {
-      const { ethereum } = window;
-
-      if (!ethereum) {
-        console.log("Make sure you have metamask!");
-        return;
-      } else {
-        console.log("We have the ethereum object", ethereum);
-      }
-
-      /*
-      * Check if we're authorized to access the user's wallet
-      */
-      const accounts = await ethereum.request({ method: 'eth_accounts' });
-
-      if (accounts.length !== 0) {
-        const account = accounts[0];
-        console.log("Found an authorized account:", account);
-        setCurrentAccount(account)
-      } else {
-        console.log("No authorized account found")
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  /**
-  * Implement your connectWallet method here
-  */
-  const connectWallet = async () => {
-    try {
-      const { ethereum } = window;
-
-      if (!ethereum) {
-        alert("Get MetaMask!");
-        return;
-      }
-
-      const accounts = await ethereum.request({ method: "eth_requestAccounts" });
-
-      console.log("Connected", accounts[0]);
-      setCurrentAccount(accounts[0]);
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  const setQuantity = (number) => {
-    const string = Number(number).toFixed(8).toString();
-    console.log(string);
-    _setQuantity(string);
+  const refreshDonationQuantity = async () => {
+    const total = await getDonations();
+    setDonationQuantity(total.toString());
   }
 
   useEffect(() => {
-    checkIfWalletIsConnected();
+    refreshDonationsTotal();
+    refreshDonationQuantity();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+  
+  const addDonation = async () => {
+    await donate(Number(inputValue));
+    refreshDonationsTotal();
+    refreshDonationQuantity();
+  }
+
+  const setInputValue = (number) => {
+    const string = Number(number).toFixed(8).toString();
+    _setInputValue(string);
+  }
 
   return (
     <div className="mainContainer">
@@ -85,7 +50,7 @@ export default function App() {
 
         <div className="bio">
           <p>
-            Total donations until now: {donations}
+            {donationQuantity} total donations until now, making a total of {donationsTotal}
           </p>
           <div className="currency">
             <img
@@ -107,11 +72,11 @@ export default function App() {
               <input
                 type="number"
                 className="input"
-                value={quantity}
+                value={inputValue}
                 step="0.00000001"
                 placeholder="0.00000001"
-                onChange={(e) => setQuantity(e.target.value)}
-                onInput={(e) => setQuantity(e.target.value)}
+                onChange={(e) => setInputValue(e.target.value)}
+                onInput={(e) => setInputValue(e.target.value)}
               >
               </input>
               <img
@@ -122,9 +87,10 @@ export default function App() {
               <p>ETH</p>
               <button className="waveButton" onClick={addDonation}>
                 Donate
-            </button>
-          </>
-        )}
+              </button>
+            </>
+          )
+        }
         </div>
         { currentAccount && (<p className="bio">Connected with {currentAccount}</p>) }
       </div>
