@@ -125,6 +125,7 @@ export default function App() {
           </>
         )}
         </div>
+        { currentAccount && (<p className="bio">Connected with {currentAccount}</p>) }
       </div>
     </div>
   );
